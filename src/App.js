@@ -9,15 +9,18 @@ const MarkerComponent = ({lat, lng ,name}) =>
                     <p>{name}</p>
                 </Marker>;
 
+const MAPBOX_TOKEN = 'pk.eyJ1IjoiamVubnlzbW9sZW5za3kiLCJhIjoiY2trZ3d0OHVyMXBnOTJvcGFnaWliNmgwdiJ9.GZLrZpn-DmQ0ScdjNp1p3A';
 
 class App extends React.Component {     
     
     state = {
         viewport: {
-            width: "100vw",
-            height: "100vh",
           center: [-74.5, 40], 
-          zoom: 1
+          zoom: 1,
+          latitude: 37.8,
+          longitude: -122.4,
+          bearing: 0,
+          pitch: 0
         },
         markersList: []
       };
@@ -32,7 +35,12 @@ class App extends React.Component {
 
 
       getMarkers() {
-        fetch("http://localhost:8000/markers", {
+        let local_host_path = "http://localhost:8000/";
+        let web_server_path = "https://jennysmolensky.pythonanywhere.com/";
+        
+        let path = web_server_path + "markers";
+
+         fetch(path, {
           method: "GET",
         })
           .then( (resposne) => {
@@ -78,13 +86,15 @@ class App extends React.Component {
         <h1>Entities Presenter</h1>
 
         <ReactMapGL       
-        
+
+{...this.state.viewport}
+        width="100vw"
+        height="100vh"
+
         {...this.state.viewport}
-         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
+        mapboxApiAccessToken={MAPBOX_TOKEN}
          {...this.state.viewport}
-        onViewportChange={(viewport) => {
-           { this.setState({ viewport }) }
-        }}             
+         onViewportChange={viewport => this.setState({viewport})}             
           
          mapStyle="mapbox://styles/jennysmolensky/ckkh5eo7s10tr17lo6cxcegw7">
 
