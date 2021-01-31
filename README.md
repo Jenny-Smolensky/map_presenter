@@ -1,4 +1,4 @@
-### map_presenter Application
+### Map Presenter Application
 
 This App will present a map with desired markers on it.
 
