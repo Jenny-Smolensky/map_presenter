@@ -26,7 +26,6 @@ class App extends React.Component {
         viewport: {
             width: "100%",
             height: "100vh",
-          center: [-74.5, 40], 
           zoom: 1
         },
         markersList: []
@@ -45,7 +44,7 @@ class App extends React.Component {
         let local_host_path = "http://localhost:8000/";
         let web_server_path = "https://jennysmolensky.pythonanywhere.com/";
         
-        let path = local_host_path + "markers";
+        let path = web_server_path + "markers";
         try{
               fetch(path, {
                 method: "GET",
