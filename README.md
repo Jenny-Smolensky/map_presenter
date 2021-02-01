@@ -3,7 +3,7 @@
 This App will present a map with desired markers on it.
 
 ## Firebase deploy
-you can also go to: _______ to see the project. 
+you can also go to: https://map-presenter.web.app/ to see the project. 
 
 
 ## Installation instructions
