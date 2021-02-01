@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
-import './App.css'
-import ReactMapGL, {Marker} from 'react-map-gl'
+import React from 'react';
+import './App.css';
+import ReactMapGL, {Marker, NavigationControl} from 'react-map-gl'
+
 
 //create component for dinamic adding
 const MarkerComponent = ({lat, lng ,name}) => 
@@ -9,18 +10,24 @@ const MarkerComponent = ({lat, lng ,name}) =>
                     <p>{name}</p>
                 </Marker>;
 
-const MAPBOX_TOKEN = 'pk.eyJ1IjoiamVubnlzbW9sZW5za3kiLCJhIjoiY2trZ3d0OHVyMXBnOTJvcGFnaWliNmgwdiJ9.GZLrZpn-DmQ0ScdjNp1p3A';
+const REACT_APP_MAPBOX_TOKEN = "pk.eyJ1IjoiamVubnlzbW9sZW5za3kiLCJhIjoiY2trZ3d0OHVyMXBnOTJvcGFnaWliNmgwdiJ9.GZLrZpn-DmQ0ScdjNp1p3A";
+
+
+const NavigationControlStyle ={
+
+    position: 'absolute',
+    top: 30,
+    left: 30, 
+};
 
 class App extends React.Component {     
     
     state = {
         viewport: {
+            width: "100%",
+            height: "100vh",
           center: [-74.5, 40], 
-          zoom: 1,
-          latitude: 37.8,
-          longitude: -122.4,
-          bearing: 0,
-          pitch: 0
+          zoom: 1
         },
         markersList: []
       };
@@ -38,21 +45,25 @@ class App extends React.Component {
         let local_host_path = "http://localhost:8000/";
         let web_server_path = "https://jennysmolensky.pythonanywhere.com/";
         
-        let path = web_server_path + "markers";
-
-         fetch(path, {
-          method: "GET",
-        })
-          .then( (resposne) => {
-              resposne.json().then((data) => {
-                  console.log(data);     
-                  if (data != "")             
-                    this.updateMarkers(data);
-              });
-          })
-          .catch(error => {
-              console.log();
-          })
+        let path = local_host_path + "markers";
+        try{
+              fetch(path, {
+                method: "GET",
+              })
+                .then( (resposne) => {
+                    resposne.json().then((data) => {
+                        console.log(data);     
+                        if (data != "")             
+                          this.updateMarkers(data);
+                    });
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+                
+            } catch(error){
+              console.log(error);
+            }
       }
     
      componentWillUnmount() {
@@ -61,22 +72,17 @@ class App extends React.Component {
 
 
      updateMarkers = (data) => {
-       try {
-            var list = []
+        var list = []
 
-            data.map((item) => {     
-                  
-                list.push(item) ;
-            } );
+        data.map((item) => {     
+               
+            list.push(item) ;
+         } );
 
-            this.setState({
-                markersList: list       
-            });
-          // console.log(list);
-       } catch (error) {
-            console.log(error);
-       }
-        
+        this.setState({
+            markersList: list       
+        });
+       // console.log(list);
      }
 
     render(){
@@ -85,20 +91,22 @@ class App extends React.Component {
         <div className="mainDiv" >
         <h1>Entities Presenter</h1>
 
-        <ReactMapGL       
-
-{...this.state.viewport}
-        width="100vw"
-        height="100vh"
-
+        <ReactMapGL  className="map"
         {...this.state.viewport}
-        mapboxApiAccessToken={MAPBOX_TOKEN}
+        mapboxApiAccessToken={REACT_APP_MAPBOX_TOKEN}
          {...this.state.viewport}
-         onViewportChange={viewport => this.setState({viewport})}             
-          
-         mapStyle="mapbox://styles/jennysmolensky/ckkh5eo7s10tr17lo6cxcegw7">
+        onViewportChange={(viewport) => {
+           { this.setState({ viewport }) }
+        }}             
+          container="mainDiv"
+          mapStyle="mapbox://styles/jennysmolensky/ckkh5eo7s10tr17lo6cxcegw7"
+         >
+             
+        <div style={NavigationControlStyle} > 
+            <NavigationControl   />
+        </div>  
 
-           
+
              {this.state.markersList.map((marker, i) =>{
               return(
                 <MarkerComponent
@@ -127,7 +135,6 @@ class App extends React.Component {
            
         </ReactMapGL> 
         
-        <div id='map'></div>
         </div>
         )};
 }

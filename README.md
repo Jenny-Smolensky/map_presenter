@@ -12,6 +12,7 @@ you can also go to: _______ to see the project.
   git clone https://github.com/Jenny-Smolensky/map_presenter.git
   npm install
   npm istall mapbox-gl
+  yarn upgrade react-map-gl@5.2.11
   npm start
 ```
 
